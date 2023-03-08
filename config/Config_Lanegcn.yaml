@@ -1,0 +1,23 @@
+experiment_name: LaneGcn
+config_name: 'base'
+
+optimizer: 'adamW'   # support: 'adamW'  'adam'  'SGD'
+scheduler: OneCycleLR   # support: 'OneCycleLR' 'Cosine'
+
+lr: 0.001
+batch_size: 16
+epoch: 64
+num_workers: 3
+
+n_actor: 128
+n_map: 128
+num_mods: 6
+num_pred_points: 30
+
+dataset_name: "Argoverse_forecast_Lanegcn"
+
+
+train_data_dir: "./lanegcn_preprocess_dataset/train/"
+test_data_dir: "./lanegcn_preprocess_dataset/val/"
+supervision_angular: False
+loss_criteria: True
