@@ -3,8 +3,8 @@
 This repository contains related algorithms in prediction fields: 
 - [x] LaneGCN
 - [x] LaneGCN checkpoints
-- [ ] Vectorent
-- [ ] Vectorent checkpoints
+- [ ] Vectornet
+- [ ] Vectornet checkpoints
 - [ ] TNT
 - [ ] TNT checkpoints
 - [ ] mmtransformer
