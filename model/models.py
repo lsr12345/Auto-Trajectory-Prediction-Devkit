@@ -2,7 +2,7 @@
 # Author: Shaoran Lu
 # Date: 2021/10/04
 # Email: lushaoran92@gmail.com
-# Description: 算法 NET
+# Description: NET
 
 example:
 
@@ -19,9 +19,9 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(__dir__)
 sys.path.append(os.path.abspath(os.path.join(__dir__, '../')))
 
-from model.backbone import LaneGcnBackbone
+from model.backbone import LaneGcnBackbone, VectornetBackBone
 from model.neck import LaneGcnNeck
-from model.head import LaneGcnHead
+from model.head import LaneGcnHead, VectornetTrajPredicter
 
 
 class LaneGcn(nn.Module):
@@ -86,3 +86,34 @@ class LaneGcn(nn.Module):
                 match_tensor += 1
         print("Pretrained Model inital tensors: {}/{}".format(match_tensor, len(pretrained_state_dict)))
         self.backbone.load_state_dict(self_state_dict, strict=False)
+
+class VectorNet(nn.Module):
+    def __init__(self, hidden_size=128, num_mods=6, future_frame_num=30):
+        super(VectorNet, self).__init__()
+        self.num_mods = num_mods
+        self.encoder = VectornetBackBone(hidden_size=hidden_size)
+        self.trajpredicter = VectornetTrajPredicter(n_actor=hidden_size, num_mods=num_mods, num_pred_points=future_frame_num)
+
+    def forward(self, x:Dict):
+        matrix_objects_batch_list = x["matrix_objects"]
+        matrix_lanes_vectors_batch_list = x["matrix_lanes"]
+        
+        global_states_list = self.encoder(matrix_objects_batch_list, matrix_lanes_vectors_batch_list)
+        output = self.trajpredicter(global_states_list)
+        return output
+
+    def load_pretrained_model(self, filename):
+        state_dict_names = ["state_dict", "model"]
+        match_tensor = 0
+        pretrained_state_dict = torch.load(filename,  map_location="cpu")
+        for name in state_dict_names:
+            if name in pretrained_state_dict:
+                pretrained_state_dict = pretrained_state_dict[name]
+                break
+        self_state_dict = self.encoder.state_dict()
+        for k, v in pretrained_state_dict.items():
+            if k in self_state_dict:
+                self_state_dict.update({k: v})
+                match_tensor += 1
+        print("Pretrained Model inital tensors: {}/{}".format(match_tensor, len(pretrained_state_dict)))
+        self.encoder.load_state_dict(self_state_dict, strict=False)

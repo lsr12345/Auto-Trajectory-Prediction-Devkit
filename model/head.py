@@ -122,38 +122,31 @@ class LaneGcnHead(nn.Module):
     def _init_weights(self, m):
         common_init(m)
 
-class CommonTrajPredicter(nn.Module):
-    def __init__(self, n_actor=128, num_mods=6, num_pred_points=30, train_model=True):
-        super(CommonTrajPredicter, self).__init__()
+class VectornetTrajPredicter(nn.Module):
+
+    def __init__(self, n_actor=128, num_mods=6, num_pred_points=30):
+        super(VectornetTrajPredicter, self).__init__()
         norm = "LN"
         act = "relu"
         self.n_actor = n_actor
-        self.num_mods = num_mods
-        self.num_pred_points = num_pred_points
-
-        self.train_model = train_model
-
+        self.num_mods = num_mods                                                
+        self.num_pred_points = num_pred_points                    
         self.pred =  nn.Sequential(
-                    MLP(n_actor*2, n_actor,  bias=True, act=act, norm=norm, res_type=True),
-                    nn.Linear(n_actor, 2 * self.num_pred_points)
-                )
+                                    MLP(n_actor*2, n_actor,  bias=True, act=act, norm=norm, res_type=True),
+                                    nn.Linear(n_actor, 2 * self.num_pred_points)
+                                  )
 
         self.apply(self._init_weights)
 
     def forward(self, actors):
-        if self.train_model:
-            out = dict()
-            out["reg"] = []
-            batch_size = len(actors)
-            for b in range(batch_size):
-                preds = self.pred(actors[b])
-                reg = preds.view(preds.size(1), 30, 2)
-                out["reg"].append(reg)
-            return out
-
-        else:
-            return 0
-        
+        out = dict()
+        out["reg"] = []
+        batch_size = len(actors)
+        for b in range(batch_size):
+            preds = self.pred(actors[b])                                                                
+            reg = preds.view(preds.size(1), 30, 2)                                              
+            out["reg"].append(reg)                                                                        
+        return out
 
     def _init_weights(self, m):
         common_init(m)

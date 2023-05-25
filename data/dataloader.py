@@ -18,7 +18,7 @@ __dir__ = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(__dir__)
 sys.path.append(os.path.abspath(os.path.join(__dir__, '../')))
 
-from data.dataset import Argoverse_forecast_LanegcnDataset
+from data.dataset import Argoverse_forecast_LanegcnDataset, Argoverse_forecast_VectorNetDataset
 
 class Data_loader():
     def __init__(self, config, args): 
@@ -33,6 +33,9 @@ class Data_loader():
             logger.info("Trian Dataset name: {}".format(self.dataset_name))
         if self.dataset_name == 'Argoverse_forecast_Lanegcn':
             train_dataset = Argoverse_forecast_LanegcnDataset(self.config['train_data_dir'], dtype="train")
+        elif self.dataset_name == 'Argoverse_forecast_VectorNet':
+            train_dataset = Argoverse_forecast_VectorNetDataset(self.config['train_data_dir'], dtype="train")
+
         else:
             raise NotImplementedError('{} dataset_name not supported.'.format(self.dataset_name))
 
@@ -61,9 +64,10 @@ class Data_loader():
         if self.is_main_process:
             logger.info("Test Dataset name: {}".format(self.dataset_name))
 
-
         if self.dataset_name == 'Argoverse_forecast_Lanegcn':
             test_dataset = Argoverse_forecast_LanegcnDataset(self.config['test_data_dir'], dtype="val")
+        elif self.dataset_name == 'Argoverse_forecast_VectorNet':
+            test_dataset = Argoverse_forecast_VectorNetDataset(self.config['test_data_dir'], dtype="val")
         else:
             raise NotImplementedError('{} dataset_name not supported.'.format(self.dataset_name))
         if self.is_main_process:

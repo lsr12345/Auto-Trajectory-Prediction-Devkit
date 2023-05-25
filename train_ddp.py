@@ -23,10 +23,10 @@ import yaml
 
 from data.dataloader import Data_loader
 from trainer_ddp import Trainer
-from model.model_factory import LaneGcn_Model
+from model.model_factory import LaneGcn_Model, VectorNet_Model
 from utils.common import find_free_port
 
-MODEL_SELECT = {'LaneGcn': LaneGcn_Model}
+MODEL_SELECT = {'LaneGcn': LaneGcn_Model, 'VectorNet': VectorNet_Model}
 
 def arg_parser():
     parser = argparse.ArgumentParser("train parser")

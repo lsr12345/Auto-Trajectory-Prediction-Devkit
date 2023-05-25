@@ -169,3 +169,27 @@ class LaneGcnLoss(nn.Module):
         m_cos /= len(angle_list)
     
         return m_sin, m_cos
+
+class VectorNetLoss(nn.Module):
+
+    def __init__(self):
+        super(VectorNetLoss, self).__init__()
+        self.reg_loss = nn.SmoothL1Loss(reduction="mean")
+
+    def forward(self, y_pr: Dict, y_gt: Dict, training=True):
+        reg =  y_pr["reg"]
+        gt_preds, has_preds = y_gt["labels"], y_gt["labels_is_valid"]
+        gt_preds = torch.cat([x[1].unsqueeze(0) for x in gt_preds], 0)
+        has_preds = torch.cat([x[1].unsqueeze(0) for x in has_preds], 0)
+        reg = torch.cat([x[1].unsqueeze(0) for x in reg], 0)
+        loss_out = dict()
+        reg_loss = self.reg_loss(
+            reg[has_preds], gt_preds[has_preds]
+        )      
+        loss_out["reg_loss"] = reg_loss
+        if training:
+            return  loss_out["reg_loss"]
+        else:
+            DE =  torch.sqrt(((reg - gt_preds) ** 2).sum(2))
+            loss_out["loss"] = reg_loss
+            return loss_out, DE

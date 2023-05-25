@@ -114,7 +114,29 @@ class Collater_Lanegcn():
         
         return return_input_batch, return_output_batch
 
+class Collater_VectorNet():
+    def __init__(self, *params):
+        self.params = params
 
+        self.input_keys = ["matrix_objects", "matrix_lanes"] 
+        self.output_keys = ["labels", "labels_is_valid", "agent_trainable"]
+
+    def __call__(self, batch_data):
+        return_input_batch = dict()
+        return_output_batch = dict()
+
+        for key in self.input_keys:
+            if key == "matrix_objects":
+                batch_matrix_objects_list = [x[key].float() if torch.is_tensor(x[key]) else torch.tensor(x[key]).float() for x in batch_data]
+                return_input_batch["matrix_objects"] = batch_matrix_objects_list
+            elif key == "matrix_lanes":
+                batch_matrix_lanes_list = [x[key].float() if torch.is_tensor(x[key]) else torch.tensor(x[key]).float() for x in batch_data]
+                return_input_batch["matrix_lanes"] = batch_matrix_lanes_list
+
+        for key in self.output_keys:
+            return_output_batch[key] =  [x[key] if torch.is_tensor(x[key]) else torch.tensor(x[key]) for x in batch_data]
+
+        return return_input_batch, return_output_batch
 
 
 

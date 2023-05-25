@@ -1,0 +1,19 @@
+experiment_name: VectorNet
+config_name: 'base'
+
+optimizer: 'adamW'   # support: 'adamW'  'adam'  'SGD'
+scheduler: OneCycleLR   # support: 'OneCycleLR' 'Cosine'
+
+lr: 0.001
+batch_size: 128
+epoch: 48
+num_workers: 15
+
+num_pred_points: 30
+dataset_name: "Argoverse_forecast_VectorNet"
+
+
+train_data_dir: "./Argoverse/prediction/train/data"
+test_data_dir: "./Argoverse/prediction/val/data"
+
+loss_criteria: True

@@ -80,7 +80,7 @@ class Trainer:
                 self.model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(self.model).to(self.args.rank)
                 self.model = torch.nn.parallel.DistributedDataParallel(self.model,
                                                                         device_ids=[self.args.rank],
-                                                                        find_unused_parameters=True)
+                                                                        find_unused_parameters=False)
             else:
                 self.model =  apex.parallel.convert_syncbn_model(self.model).to(self.args.rank)
                 self.model = apex.parallel.DistributedDataParallel(self.model)
