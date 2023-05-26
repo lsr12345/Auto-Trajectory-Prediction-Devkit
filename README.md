@@ -21,7 +21,7 @@ This repository contains related algorithms in prediction fields:
 ## Methods Difference
 | Method | ADE_1 | FDE_1| MR_1| mADE | mFDE | mMR |
 | :---: | :---: | :---: | :---:|:---:| :---: | :---: |
-| LaneGCN | 1.31 | 2.88 | 0.49 | 0.70 | 1.07 | 0.09 |
+| LaneGCN | 1.34 | 2.95 | 0.49 | 0.71 | 1.08 | 0.10 |
 | VectorNet | 1.54 | 3.44 | 0.57 | - | - | - |
 - LaneGCN
   - More lightweight data preprocessing(official need more 40G+ memory)
